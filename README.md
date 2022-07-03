@@ -41,7 +41,7 @@ target_link_libraries(foo PRIVATE tss::tss)
 #include <iostream>
 
 int main() try {
-  tss::socket sock{};
+  tss::tcp_socket_4 sock{};
   sock.connect({{127U, 0U, 0U, 1U}, 1337U});
   sock.send(42);
   
