@@ -9,6 +9,8 @@
 #include <cerrno>
 #include <cstring>
 
+#include <netdb.h>
+
 #endif
 
 namespace {
@@ -41,6 +43,16 @@ namespace tss {
   }
 
   int socket_error::error_code() const noexcept
+  {
+    return error_code_;
+  }
+
+  address_info_error::address_info_error(int error_code)
+      :exception{std::string{::gai_strerror(error_code)}}, error_code_{error_code}
+  {
+  }
+
+  int address_info_error::error_code() const noexcept
   {
     return error_code_;
   }

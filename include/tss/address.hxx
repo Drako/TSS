@@ -3,6 +3,7 @@
 #include "enums.hxx"
 
 #include <cstdint>
+#include <string_view>
 #include <tuple>
 
 namespace tss {
@@ -37,4 +38,7 @@ namespace tss {
 
   using address_v4_t = address_t<ip_version_t::V4>;
   using address_v6_t = address_t<ip_version_t::V6>;
+
+  ip_address_v4_t resolve_ip_address_v4(std::string_view address);
+  ip_address_v6_t resolve_ip_address_v6(std::string_view address);
 }

@@ -25,4 +25,18 @@ namespace tss {
   private:
     int error_code_;
   };
+
+  class address_info_error : public exception {
+  public:
+    explicit address_info_error(int error_code);
+
+    address_info_error(address_info_error const&) noexcept = default;
+
+    address_info_error& operator=(address_info_error const&) noexcept = default;
+
+    [[nodiscard]] int error_code() const noexcept;
+
+  private:
+    int error_code_;
+  };
 }
