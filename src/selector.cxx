@@ -27,7 +27,7 @@ namespace tss {
     };
   }
 
-  selector::selector()
+  selector::selector(native::socket_api const&)
       :data_{std::make_unique<detail::selector_data>()}
   {
   }

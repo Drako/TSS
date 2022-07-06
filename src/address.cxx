@@ -18,7 +18,7 @@
 #endif
 
 namespace tss {
-  ip_address_v4_t resolve_ip_address_v4(std::string_view const address)
+  ip_address_v4_t resolve_ip_address_v4(std::string_view const address, native::socket_api const&)
   {
     addrinfo hints{};
     hints.ai_family = AF_INET;
@@ -44,7 +44,7 @@ namespace tss {
     return addr;
   }
 
-  ip_address_v6_t resolve_ip_address_v6(std::string_view address)
+  ip_address_v6_t resolve_ip_address_v6(std::string_view address, native::socket_api const&)
   {
     addrinfo hints{};
     hints.ai_family = AF_INET6;

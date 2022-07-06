@@ -17,7 +17,7 @@ namespace tss {
        * Default constructs a socket with the given IP address version and protocol.
        * @throws socket_error If the native socket call fails.
        */
-      socket_base();
+      explicit socket_base(native::socket_api const& = native::socket_api::instance());
 
       /**
        * Move constructs a socket making the original socket invalid.

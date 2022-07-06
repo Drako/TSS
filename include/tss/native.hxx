@@ -18,4 +18,18 @@ namespace tss::native {
 
     [[nodiscard]] virtual traits::socket_t native_handle() const noexcept = 0;
   };
+
+  class socket_api final {
+  public:
+    socket_api(socket_api const&) = delete;
+
+    socket_api& operator=(socket_api const&) = delete;
+
+    ~socket_api() noexcept;
+
+    static socket_api const& instance();
+
+  private:
+    socket_api();
+  };
 }

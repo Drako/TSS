@@ -16,7 +16,7 @@ namespace tss {
 
   class selector final {
   public:
-    selector();
+    explicit selector(native::socket_api const& = native::socket_api::instance());
 
     ~selector() noexcept;
 

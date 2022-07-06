@@ -149,7 +149,7 @@ namespace {
 namespace tss {
   namespace detail {
     template<ip_version_t TIP, protocol_t TProto>
-    socket_base<TIP, TProto>::socket_base()
+    socket_base<TIP, TProto>::socket_base(native::socket_api const&)
         : handle_{::socket(::af<TIP>, ::type<TProto>, ::proto<TProto>)}
     {
       if (handle_==traits::invalid_value) {
