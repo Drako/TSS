@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <string_view>
 #include <tuple>
+#include <variant>
+#include <vector>
 
 namespace tss {
   namespace detail {
@@ -43,6 +45,15 @@ namespace tss {
   ip_address_v4_t
   resolve_ip_address_v4(std::string_view address, native::socket_api const& = native::socket_api::instance());
 
+  std::vector<ip_address_v4_t>
+  resolve_ip_addresses_v4(std::string_view address, native::socket_api const& = native::socket_api::instance());
+
   ip_address_v6_t
   resolve_ip_address_v6(std::string_view address, native::socket_api const& = native::socket_api::instance());
+
+  std::vector<ip_address_v6_t>
+  resolve_ip_addresses_v6(std::string_view address, native::socket_api const& = native::socket_api::instance());
+
+  std::vector<std::variant<ip_address_v4_t, ip_address_v6_t>>
+  resolve_ip_addresses(std::string_view address, native::socket_api const& = native::socket_api::instance());
 }

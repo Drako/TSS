@@ -51,6 +51,7 @@ if (TSS_IS_ROOT)
   FetchContent_MakeAvailable(GoogleTest)
 
   add_executable(tss_tests
+      tests/address_tests.cxx
       tests/exceptions_tests.cxx
       tests/socket_tests.cxx)
   target_link_libraries(tss_tests PRIVATE tss gtest gmock gmock_main)
