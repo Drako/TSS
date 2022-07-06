@@ -3,7 +3,12 @@
 #include <utility>
 
 #if defined(_WIN32)
-#error TODO: implement windows version
+
+#define WIN32_LEAN_AND_MEAN
+
+#include <Windows.h>
+#include <WinSock2.h>
+
 #else
 
 #include <cerrno>
@@ -13,7 +18,31 @@
 
 namespace {
 #if defined(_WIN32)
-#error TODO: implement windows version
+
+  int last_error() noexcept
+  {
+    return WSAGetLastError();
+  }
+
+  std::string error_string(int const error_code)
+  {
+    char* buffer{nullptr};
+    if (FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        nullptr,
+        static_cast<DWORD>(error_code),
+        0U,
+        reinterpret_cast<LPSTR>(&buffer),
+        256U,
+        nullptr
+    )==0U) {
+      return std::to_string(error_code);
+    }
+    std::string message{buffer};
+    LocalFree(buffer);
+    return message;
+  }
+
 #else
 
   int last_error() noexcept
