@@ -37,6 +37,9 @@ add_library(tss STATIC
 target_compile_features(tss PUBLIC cxx_std_20)
 target_include_directories(tss PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
 target_link_libraries(tss PUBLIC Microsoft.GSL::GSL)
+if (WIN32)
+  target_link_libraries(tss PUBLIC ws2_32)
+endif ()
 
 add_library(tss::tss ALIAS tss)
 

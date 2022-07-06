@@ -4,6 +4,7 @@
 #include "concepts.hxx"
 
 #include <array>
+#include <chrono>
 #include <memory>
 
 #include <gsl/span>

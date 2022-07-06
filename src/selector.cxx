@@ -2,7 +2,13 @@
 #include <tss/exceptions.hxx>
 
 #if defined(_WIN32)
-#error TODO: implement windows version
+
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+
+#include <Windows.h>
+#include <WinSock2.h>
+
 #else
 
 #include <sys/select.h>
@@ -67,17 +73,17 @@ namespace tss {
     return static_cast<std::size_t>(result);
   }
 
-  bool selector::is_read_(int sock) const noexcept
+  bool selector::is_read_(traits::socket_t const sock) const noexcept
   {
     return FD_ISSET(sock, &data_->readfds);
   }
 
-  bool selector::is_write_(int sock) const noexcept
+  bool selector::is_write_(traits::socket_t const sock) const noexcept
   {
     return FD_ISSET(sock, &data_->writefds);
   }
 
-  bool selector::is_except_(int sock) const noexcept
+  bool selector::is_except_(traits::socket_t const sock) const noexcept
   {
     return FD_ISSET(sock, &data_->exceptfds);
   }

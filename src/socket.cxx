@@ -4,7 +4,14 @@
 #include <limits>
 
 #if defined(_WIN32)
-#error TODO: implement windows version
+
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+
+#include <Windows.h>
+#include <WinSock2.h>
+#include <ws2ipdef.h>
+
 #else
 
 #include <arpa/inet.h>
@@ -38,33 +45,41 @@ namespace {
   template<>
   inline auto constexpr proto<tss::protocol_t::UDP> = IPPROTO_UDP;
 
+#if defined(_WIN32)
+#define W u.Word
+#else
+#define W __u16_addr.__u6_addr16
+#endif
+
   in6_addr make_in_addr(tss::ip_address_v6_t const& ip) noexcept
   {
     in6_addr addr{};
-    addr.__u6_addr.__u6_addr16[0] = htons(std::get<0U>(ip));
-    addr.__u6_addr.__u6_addr16[1] = htons(std::get<1U>(ip));
-    addr.__u6_addr.__u6_addr16[2] = htons(std::get<2U>(ip));
-    addr.__u6_addr.__u6_addr16[3] = htons(std::get<3U>(ip));
-    addr.__u6_addr.__u6_addr16[4] = htons(std::get<4U>(ip));
-    addr.__u6_addr.__u6_addr16[5] = htons(std::get<5U>(ip));
-    addr.__u6_addr.__u6_addr16[6] = htons(std::get<6U>(ip));
-    addr.__u6_addr.__u6_addr16[7] = htons(std::get<7U>(ip));
+    addr.W[0] = htons(std::get<0U>(ip));
+    addr.W[1] = htons(std::get<1U>(ip));
+    addr.W[2] = htons(std::get<2U>(ip));
+    addr.W[3] = htons(std::get<3U>(ip));
+    addr.W[4] = htons(std::get<4U>(ip));
+    addr.W[5] = htons(std::get<5U>(ip));
+    addr.W[6] = htons(std::get<6U>(ip));
+    addr.W[7] = htons(std::get<7U>(ip));
     return addr;
   }
 
   tss::ip_address_v6_t make_ip_address(in6_addr const& addr) noexcept
   {
     return {
-        ntohs(addr.__u6_addr.__u6_addr16[0]),
-        ntohs(addr.__u6_addr.__u6_addr16[1]),
-        ntohs(addr.__u6_addr.__u6_addr16[2]),
-        ntohs(addr.__u6_addr.__u6_addr16[3]),
-        ntohs(addr.__u6_addr.__u6_addr16[4]),
-        ntohs(addr.__u6_addr.__u6_addr16[5]),
-        ntohs(addr.__u6_addr.__u6_addr16[6]),
-        ntohs(addr.__u6_addr.__u6_addr16[7]),
+        ntohs(addr.W[0]),
+        ntohs(addr.W[1]),
+        ntohs(addr.W[2]),
+        ntohs(addr.W[3]),
+        ntohs(addr.W[4]),
+        ntohs(addr.W[5]),
+        ntohs(addr.W[6]),
+        ntohs(addr.W[7]),
     };
   }
+
+#undef W
 
   sockaddr_in6 make_sock_addr(tss::address_v6_t const& addr) noexcept
   {
@@ -161,7 +176,7 @@ namespace tss {
     }
 
     template<ip_version_t TIP, protocol_t TProto>
-    int socket_base<TIP, TProto>::native_handle() const noexcept
+    socket_base<TIP, TProto>::traits::socket_t socket_base<TIP, TProto>::native_handle() const noexcept
     {
       return handle_;
     }
@@ -169,13 +184,13 @@ namespace tss {
     template<ip_version_t TIP, protocol_t TProto>
     void socket_base<TIP, TProto>::close()
     {
-#if defined(_WIN32)
-#error implement windows version
-#else
       if (handle_!=traits::invalid_value) {
+#if defined(_WIN32)
+        ::closesocket(handle_);
+#else
         ::close(handle_);
-      }
 #endif
+      }
       handle_ = traits::invalid_value;
     }
 
@@ -220,7 +235,7 @@ namespace tss {
     }
 
     template<ip_version_t TIP, protocol_t TProto>
-    socket_base<TIP, TProto>::socket_base(int const handle) noexcept
+    socket_base<TIP, TProto>::socket_base(traits::socket_t const handle) noexcept
         : handle_{handle}
     {
     }
@@ -280,10 +295,22 @@ namespace tss {
   template<ip_version_t TIP>
   void socket<TIP, protocol_t::TCP>::shutdown(shutdown_t const how)
   {
-#if defined(_WIN32)
-#error TODO: implement windows version
-#else
     int native_how{};
+#if defined(_WIN32)
+    switch (how) {
+    case shutdown_t::Read:
+      native_how = SD_RECEIVE;
+      break;
+    case shutdown_t::Write:
+      native_how = SD_SEND;
+      break;
+    case shutdown_t::ReadWrite:
+      native_how = SD_BOTH;
+      break;
+    default:
+      Expects(native_how!=0);
+    }
+#else
     switch (how) {
     case shutdown_t::Read:
       native_how = SHUT_RD;
