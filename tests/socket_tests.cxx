@@ -10,7 +10,7 @@
 
 TEST(SocketTests, canSendAndReceiveOverUdp4)
 {
-  tss::address_v4_t const address{{127U, 0U, 0U, 1U}, 12345U};
+  tss::address_v4_t const address{tss::resolve_ip_address_v4("localhost"), 12345U};
   std::atomic done{false};
 
   std::future<int> answer{std::async(std::launch::async, [address, &done] {
@@ -57,7 +57,7 @@ TEST(SocketTests, canSendAndReceiveOverUdp4)
 
 TEST(SocketTests, canSendAndReceiveOverUdp6)
 {
-  tss::address_v6_t const address{{0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U}, 12345U};
+  tss::address_v6_t const address{tss::resolve_ip_address_v6("localhost"), 12345U};
   std::atomic done{false};
 
   std::future<int> answer{std::async(std::launch::async, [address, &done] {
@@ -104,7 +104,7 @@ TEST(SocketTests, canSendAndReceiveOverUdp6)
 
 TEST(SocketTests, canSendAndReceiveOverTcp4)
 {
-  tss::address_v4_t const address{{127U, 0U, 0U, 1U}, 54321U};
+  tss::address_v4_t const address{tss::resolve_ip_address_v4("127.0.0.1"), 54321U};
 
   std::thread server([address] {
     tss::tcp_socket_4 sock{};
@@ -135,7 +135,7 @@ TEST(SocketTests, canSendAndReceiveOverTcp4)
 
 TEST(SocketTests, canSendAndReceiveOverTcp6)
 {
-  tss::address_v6_t const address{{0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U}, 54321U};
+  tss::address_v6_t const address{tss::resolve_ip_address_v6("::1"), 54321U};
 
   std::thread server([address] {
     tss::tcp_socket_6 sock{};
