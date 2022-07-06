@@ -60,7 +60,7 @@ namespace tss {
 #if defined(_WIN32)
 #define W u.Word
 #else
-#define W __u16_addr.__u6_addr16
+#define W __u6_addr.__u6_addr16
 #endif
 
     ip_address_v6_t addr{
