@@ -22,7 +22,7 @@ namespace {
 #if defined(_WIN32)
 #define W u.Word
 #else
-#define W __u6_addr.__u6_addr16
+#define W s6_addr16
 #endif
 
   tss::ip_address_v6_t make_ip_address(in6_addr const& addr) noexcept
